@@ -49,7 +49,7 @@ summerportfolio/
 └── package.json           # Root package with scripts
 ```
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -81,7 +81,7 @@ summerportfolio/
 
 4. **Start the application:**
    ```bash
-   npm run dev
+ **  npm run dev**
    ```
    
    This runs both the backend (port 3001) and frontend (port 5173) concurrently.
@@ -94,7 +94,7 @@ summerportfolio/
 ##  Admin Access
 
 1. Navigate to http://localhost:5173/admin/login
-2. Enter the password you set in `.env` (default: `changeme`)
+2. Enter the password you set in `.env` 
 3. You'll be redirected to the admin dashboard
 
 ##  Usage Guide
@@ -137,9 +137,9 @@ summerportfolio/
 ##  Customization
 
 ### Change the App Name
-The app is currently called "Summer of Build" - you can rename it:
+The app is currently called "Suriya Builds" - you can rename it:
 
-1. **Frontend:** Edit `client/src/pages/HomePage.jsx` and search for "Summer of Build"
+1. **Frontend:** Edit `client/src/pages/HomePage.jsx` and search for "Suriya Builds"
 2. **Title:** Edit `client/index.html` - change the `<title>` tag
 3. **Package:** Edit `package.json` files to update the name field
 
@@ -159,8 +159,6 @@ The SQLite database is automatically created at `server/db/portfolio.db` on firs
 
 - **Projects** with many-to-many relationship to skills
 - **Skills** organized by category
-- **Journal Entries** with optional project linking
-- **Automatic timestamps** on all records
 
 ### Seed Data
 The app includes example data to get you started:
@@ -190,20 +188,7 @@ git remote add origin https://github.com/yourusername/summer-of-build.git
 git push -u origin main
 ```
 
-### What's Ignored
-The `.gitignore` file already excludes:
-- `node_modules/`
-- `.env` (keeps your password secret!)
-- `*.db` (your local database)
-- Build outputs
-
-### Deploying
-Consider these platforms:
-- **Frontend:** Vercel, Netlify, GitHub Pages
-- **Backend + DB:** Railway, Render, Fly.io
-- **Full-stack:** Heroku, DigitalOcean
-
-## 🔧 Development
+##  Development!!
 
 ### Run Backend Only
 ```bash
@@ -224,7 +209,7 @@ npm run client
 - Similar endpoints for `/api/skills` and `/api/journal`
 - `POST /api/auth/login` - Admin login
 
-## 🐛 Troubleshooting
+##  Troubleshooting!!
 
 ### Port Already in Use
 If port 3001 or 5173 is busy, change them:
@@ -239,18 +224,7 @@ Delete `server/db/portfolio.db` and restart to recreate with seed data.
 2. Verify `JWT_SECRET` is set
 3. Clear browser localStorage and login again
 
-### Styles Not Loading
-```bash
-cd client
-npm install
-npm run dev
-```
-
-## 📸 Screenshots
-
-*Add your own screenshots here after customizing!*
-
-## 🙏 Credits
+##  Credits
 
 Built with:
 - React + Vite
@@ -260,23 +234,6 @@ Built with:
 - React Router
 - React Markdown
 
-## 📄 License
+##  License
 
 MIT License - Feel free to use this for your own learning portfolio!
-
-## 🎯 Next Steps
-
-Ideas to extend this project:
-- Add file upload for project images
-- Export journal as PDF
-- Add search functionality
-- Include a contact form
-- Add project categories/tags
-- Create a blog section
-- Add GitHub API integration to auto-import projects
-- Include analytics dashboard
-- Add dark/light mode toggle
-
----
-
-**Happy Building! 🚀** If you find this helpful, star the repo and share your journey!
