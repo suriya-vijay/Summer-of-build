@@ -4,9 +4,9 @@ export async function seedDatabase() {
   const db = getDb();
 
   // Check if data already exists
-  const projectCount = db.exec('SELECT COUNT(*) as count FROM projects')[0]?.values[0][0] || 0;
+  const skillCount = db.exec('SELECT COUNT(*) as count FROM skills')[0]?.values[0][0] || 0;
 
-  if (projectCount > 0) {
+  if (skillCount > 0) {
     console.log('📊 Database already has data, skipping seed');
     return;
   }

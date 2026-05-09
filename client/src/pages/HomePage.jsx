@@ -1,31 +1,21 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import ReactMarkdown from 'react-markdown'
 
 export default function HomePage() {
   const [stats, setStats] = useState(null)
   const [projects, setProjects] = useState([])
   const [skills, setSkills] = useState([])
-  const [journal, setJournal] = useState([])
   const [filter, setFilter] = useState('all')
-  const [selectedTag, setSelectedTag] = useState(null)
 
   useEffect(() => {
     fetch('/api/stats').then(r => r.json()).then(setStats)
     fetch('/api/projects').then(r => r.json()).then(setProjects)
     fetch('/api/skills').then(r => r.json()).then(setSkills)
-    fetch('/api/journal').then(r => r.json()).then(setJournal)
   }, [])
 
-  const filteredProjects = projects.filter(p => 
+  const filteredProjects = projects.filter(p =>
     filter === 'all' ? true : p.status === filter
   )
-
-  const filteredJournal = selectedTag 
-    ? journal.filter(j => j.tags.includes(selectedTag))
-    : journal
-
-  const allTags = [...new Set(journal.flatMap(j => j.tags))]
 
   return (
     <div className="min-h-screen">
@@ -35,13 +25,11 @@ export default function HomePage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <span className="text-2xl">🚀</span>
-              <span className="text-xl font-bold font-mono text-primary">Summer of Build</span>
+              <span className="text-xl font-bold font-mono text-primary">Suriya Builds</span>
             </div>
             <div className="flex space-x-8">
               <a href="#projects" className="text-gray-300 hover:text-primary transition-colors">Projects</a>
               <a href="#skills" className="text-gray-300 hover:text-primary transition-colors">Skills</a>
-              <a href="#journal" className="text-gray-300 hover:text-primary transition-colors">Journal</a>
-              <a href="#timeline" className="text-gray-300 hover:text-primary transition-colors">Timeline</a>
               <Link to="/admin/login" className="text-gray-400 hover:text-primary transition-colors text-sm">Admin</Link>
             </div>
           </div>
@@ -49,29 +37,29 @@ export default function HomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden">
+      <section className="relative py-24 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent"></div>
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center animate-fade-in">
             <h1 className="text-6xl md:text-7xl font-bold mb-6">
-              Building <span className="text-primary animate-glow">The Future</span>
+              Suriya <span className="text-primary animate-glow">Vijayakumar</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto">
-              Documenting my journey from zero to full-stack developer — one project, one skill, one line of code at a time
+              An Ohio State student on a mission — building real projects, learning full-stack development, and documenting every step of the journey.
             </p>
             {stats && (
-              <div className="flex flex-wrap justify-center gap-8 mt-12">
+              <div className="flex flex-wrap justify-center gap-12 mt-12">
                 <div className="text-center animate-slide-up">
                   <div className="text-5xl font-bold text-primary font-mono">{stats.projects.total}</div>
                   <div className="text-gray-400 mt-2">Projects Built</div>
                 </div>
                 <div className="text-center animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                  <div className="text-5xl font-bold text-primary font-mono">{stats.skills}</div>
-                  <div className="text-gray-400 mt-2">Skills Learned</div>
+                  <div className="text-5xl font-bold text-primary font-mono">{stats.projects.completed}</div>
+                  <div className="text-gray-400 mt-2">Completed</div>
                 </div>
                 <div className="text-center animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                  <div className="text-5xl font-bold text-primary font-mono">{stats.daysSinceStart}</div>
-                  <div className="text-gray-400 mt-2">Days of Learning</div>
+                  <div className="text-5xl font-bold text-primary font-mono">{stats.skills}</div>
+                  <div className="text-gray-400 mt-2">Skills Learned</div>
                 </div>
               </div>
             )}
@@ -85,19 +73,19 @@ export default function HomePage() {
           <div className="flex justify-between items-center mb-12">
             <h2 className="text-4xl font-bold">Projects</h2>
             <div className="flex gap-2">
-              <button 
+              <button
                 onClick={() => setFilter('all')}
                 className={`px-4 py-2 rounded-lg transition-all ${filter === 'all' ? 'bg-primary text-dark-900' : 'bg-dark-700 text-gray-300 hover:bg-dark-600'}`}
               >
                 All
               </button>
-              <button 
+              <button
                 onClick={() => setFilter('completed')}
                 className={`px-4 py-2 rounded-lg transition-all ${filter === 'completed' ? 'bg-primary text-dark-900' : 'bg-dark-700 text-gray-300 hover:bg-dark-600'}`}
               >
                 Completed
               </button>
-              <button 
+              <button
                 onClick={() => setFilter('in-progress')}
                 className={`px-4 py-2 rounded-lg transition-all ${filter === 'in-progress' ? 'bg-primary text-dark-900' : 'bg-dark-700 text-gray-300 hover:bg-dark-600'}`}
               >
@@ -111,8 +99,8 @@ export default function HomePage() {
               <div key={project.id} className="card group cursor-pointer">
                 {project.cover_image_url && (
                   <div className="mb-4 -mx-6 -mt-6 h-48 overflow-hidden rounded-t-xl">
-                    <img 
-                      src={project.cover_image_url} 
+                    <img
+                      src={project.cover_image_url}
                       alt={project.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
@@ -155,11 +143,11 @@ export default function HomePage() {
       <section id="skills" className="py-20 px-4 bg-dark-800/30">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold mb-12">Skills & Technologies</h2>
-          
+
           {['Frontend', 'Backend', 'Database', 'AI', 'Tools'].map(category => {
             const categorySkills = skills.filter(s => s.category === category)
             if (categorySkills.length === 0) return null
-            
+
             return (
               <div key={category} className="mb-10">
                 <h3 className="text-2xl font-semibold mb-6 text-primary">{category}</h3>
@@ -170,8 +158,8 @@ export default function HomePage() {
                       <div className="font-semibold mb-2">{skill.name}</div>
                       <div className="flex justify-center gap-1">
                         {[...Array(5)].map((_, i) => (
-                          <div 
-                            key={i} 
+                          <div
+                            key={i}
                             className={`w-2 h-2 rounded-full ${i < skill.proficiency ? 'bg-primary' : 'bg-dark-600'}`}
                           />
                         ))}
@@ -185,91 +173,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Journal Section */}
-      <section id="journal" className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-12">
-            <h2 className="text-4xl font-bold mb-6">Learning Journal</h2>
-            <div className="flex flex-wrap gap-2">
-              <button 
-                onClick={() => setSelectedTag(null)}
-                className={`px-4 py-2 rounded-lg transition-all text-sm ${!selectedTag ? 'bg-primary text-dark-900' : 'bg-dark-700 text-gray-300 hover:bg-dark-600'}`}
-              >
-                All
-              </button>
-              {allTags.map(tag => (
-                <button 
-                  key={tag}
-                  onClick={() => setSelectedTag(tag)}
-                  className={`px-4 py-2 rounded-lg transition-all text-sm ${selectedTag === tag ? 'bg-primary text-dark-900' : 'bg-dark-700 text-gray-300 hover:bg-dark-600'}`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            {filteredJournal.map(entry => (
-              <article key={entry.id} className="card">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-2xl font-bold mb-2">{entry.title}</h3>
-                    <div className="text-sm text-gray-400">{new Date(entry.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
-                  </div>
-                  {entry.project_title && (
-                    <span className="badge">🔗 {entry.project_title}</span>
-                  )}
-                </div>
-                <div className="prose prose-invert prose-sm max-w-none">
-                  <ReactMarkdown>{entry.body.slice(0, 300)}...</ReactMarkdown>
-                </div>
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {entry.tags.map(tag => (
-                    <span key={tag} className="text-xs px-2 py-1 bg-dark-700 text-gray-400 rounded">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Timeline Section */}
-      <section id="timeline" className="py-20 px-4 bg-dark-800/30">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-bold mb-12">Journey Timeline</h2>
-          
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-primary/30"></div>
-            
-            {[...projects].sort((a, b) => new Date(a.start_date) - new Date(b.start_date)).map((project, idx) => (
-              <div key={project.id} className="relative pl-20 pb-12 last:pb-0">
-                <div className="absolute left-6 w-5 h-5 bg-primary rounded-full border-4 border-dark-900"></div>
-                <div className="card">
-                  <div className="text-sm text-gray-400 mb-2">{new Date(project.start_date).toLocaleDateString()}</div>
-                  <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                  <p className="text-gray-400 text-sm">{project.description}</p>
-                  {project.status === 'completed' && project.end_date && (
-                    <div className="text-xs text-primary mt-2">
-                      Completed: {new Date(project.end_date).toLocaleDateString()}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="border-t border-dark-700 py-12 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-gray-400">
-            Built with 💚 during Summer of Build 2026
+            Built with 💚 by Suriya Vijayakumar — Summer 2026
           </p>
           <p className="text-gray-500 text-sm mt-2">
             React • Node.js • Express • SQLite • Tailwind CSS
