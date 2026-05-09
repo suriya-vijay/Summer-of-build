@@ -1,8 +1,8 @@
-# 🚀 Summer of Build - Personal Learning Portfolio
+ Summer of Build - Personal Learning Portfolio
 
 A full-stack portfolio application to track your development journey, showcase projects, document skills, and maintain a learning journal. Perfect for developers building their portfolio while learning!
 
-## ✨ Features
+##  Features
 
 ### Public Portfolio Mode
 - **Hero Section** with animated stats (projects built, skills learned, days of learning)
@@ -19,7 +19,7 @@ A full-stack portfolio application to track your development journey, showcase p
 - **Journal Management** - Write markdown entries with tag support
 - JWT-based authentication
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Frontend:** React 18 + Vite, Tailwind CSS, React Router
 - **Backend:** Node.js + Express
@@ -27,7 +27,7 @@ A full-stack portfolio application to track your development journey, showcase p
 - **Auth:** JWT tokens with secure password protection
 - **Markdown:** react-markdown for journal rendering
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 summerportfolio/
@@ -91,13 +91,13 @@ summerportfolio/
    - **Admin Panel:** http://localhost:5173/admin/login
    - **API:** http://localhost:3001/api
 
-## 🔐 Admin Access
+##  Admin Access
 
 1. Navigate to http://localhost:5173/admin/login
 2. Enter the password you set in `.env` (default: `changeme`)
 3. You'll be redirected to the admin dashboard
 
-## 📝 Usage Guide
+##  Usage Guide
 
 ### Adding Projects
 1. Go to Admin → Projects
@@ -134,7 +134,7 @@ summerportfolio/
 3. Add tags (comma-separated)
 4. Link to a project (optional)
 
-## 🎨 Customization
+##  Customization
 
 ### Change the App Name
 The app is currently called "Summer of Build" - you can rename it:
@@ -153,7 +153,7 @@ The app uses a lime green (`#00ff88`) accent color. To change it:
 ### Customize the Hero Message
 Edit `client/src/pages/HomePage.jsx` - find the hero section and update the headline and tagline.
 
-## 📊 Database
+##  Database
 
 The SQLite database is automatically created at `server/db/portfolio.db` on first run. It includes:
 
@@ -170,7 +170,7 @@ The app includes example data to get you started:
 
 To reset the database, simply delete `server/db/portfolio.db` and restart the server.
 
-## 🌐 GitHub Setup
+##  GitHub Setup
 
 ### Initial Setup
 ```bash
