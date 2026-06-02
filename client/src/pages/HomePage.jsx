@@ -1,3 +1,4 @@
+import API_BASE from '../lib/api.js'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -8,10 +9,10 @@ export default function HomePage() {
   const [filter, setFilter] = useState('all')
 
   useEffect(() => {
-    fetch('/api/stats').then(r => r.json()).then(setStats)
-    fetch('/api/projects').then(r => r.json()).then(setProjects)
-    fetch('/api/skills').then(r => r.json()).then(setSkills)
-  }, [])
+    fetch(`https://summer-of-build.onrender.com/api/stats`).then(r => r.json()).then(setStats).catch(console.error)
+    fetch(`https://summer-of-build.onrender.com/api/projects`).then(r => r.json()).then(setProjects).catch(console.error)
+    fetch(`https://summer-of-build.onrender.com/api/skills`).then(r => r.json()).then(setSkills).catch(console.error)
+}, [])
 
   const filteredProjects = projects.filter(p =>
     filter === 'all' ? true : p.status === filter
