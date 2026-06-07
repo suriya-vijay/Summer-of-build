@@ -1,16 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { initializeDatabase, getDb, saveDatabase } from './db/schema.js';
+import { initializeDatabase, getDb } from './db/schema.js';
 import { seedDatabase } from './db/seed.js';
 
-// Import routes
 import authRoutes from './routes/auth.js';
 import projectsRoutes from './routes/projects.js';
 import skillsRoutes from './routes/skills.js';
 import journalRoutes from './routes/journal.js';
 
-// Load environment variables
 dotenv.config({ path: '../.env' });
 
 if (!process.env.ADMIN_PASSWORD) {
@@ -32,30 +30,32 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectsRoutes);
 app.use('/api/skills', skillsRoutes);
 app.use('/api/journal', journalRoutes);
 
-// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Summer of Build API is running' });
 });
 
-// Stats endpoint
-app.get('/api/stats', (req, res) => {
+app.get('/api/stats', async (req, res) => {
   try {
     const db = getDb();
 
-    const projectCount = db.exec('SELECT COUNT(*) as count FROM projects')[0]?.values[0][0] || 0;
-    const completedProjects = db.exec("SELECT COUNT(*) as count FROM projects WHERE status = 'completed'")[0]?.values[0][0] || 0;
-    const skillCount = db.exec('SELECT COUNT(*) as count FROM skills')[0]?.values[0][0] || 0;
-    const journalCount = db.exec('SELECT COUNT(*) as count FROM journal_entries')[0]?.values[0][0] || 0;
+    const { rows: projectRows } = await db.query('SELECT COUNT(*) as count FROM projects');
+    const { rows: completedRows } = await db.query("SELECT COUNT(*) as count FROM projects WHERE status = 'completed'");
+    const { rows: skillRows } = await db.query('SELECT COUNT(*) as count FROM skills');
+    const { rows: journalRows } = await db.query('SELECT COUNT(*) as count FROM journal_entries');
+    const { rows: firstRows } = await db.query('SELECT MIN(start_date) as first_date FROM projects');
 
-    const firstProjectResult = db.exec('SELECT MIN(start_date) as first_date FROM projects');
+    const projectCount = parseInt(projectRows[0].count);
+    const completedProjects = parseInt(completedRows[0].count);
+    const skillCount = parseInt(skillRows[0].count);
+    const journalCount = parseInt(journalRows[0].count);
+
     let daysSinceStart = 0;
-    const firstDate = firstProjectResult[0]?.values[0][0];
+    const firstDate = firstRows[0]?.first_date;
     if (firstDate) {
       const diffTime = Math.abs(new Date() - new Date(firstDate));
       daysSinceStart = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -86,7 +86,6 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Start server after DB is ready
 async function start() {
   await initializeDatabase();
   await seedDatabase();

@@ -1,86 +1,70 @@
 import express from 'express';
-import { getDb, saveDatabase } from '../db/schema.js';
+import { getDb } from '../db/schema.js';
 import { authMiddleware } from '../middleware/auth.js';
 
 const router = express.Router();
 
-function dbAll(db, query, params = []) {
-  const result = db.exec(query, params);
-  if (!result[0]) return [];
-  const { columns, values } = result[0];
-  return values.map(row => Object.fromEntries(columns.map((col, i) => [col, row[i]])));
-}
-
-function dbGet(db, query, params = []) {
-  return dbAll(db, query, params)[0] || null;
-}
-
-function dbRun(db, query, params = []) {
-  db.run(query, params);
-  const result = db.exec('SELECT last_insert_rowid() as id');
-  return { lastInsertRowid: result[0]?.values[0][0] };
-}
-
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const db = getDb();
-    const skills = dbAll(db, 'SELECT * FROM skills ORDER BY category, name');
-    res.json(skills);
+    const { rows } = await db.query('SELECT * FROM skills ORDER BY category, name');
+    res.json(rows);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch skills' });
   }
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const db = getDb();
-    const skill = dbGet(db, 'SELECT * FROM skills WHERE id = ?', [req.params.id]);
-    if (!skill) return res.status(404).json({ error: 'Skill not found' });
-    res.json(skill);
+    const { rows } = await db.query('SELECT * FROM skills WHERE id = $1', [req.params.id]);
+    if (!rows[0]) return res.status(404).json({ error: 'Skill not found' });
+    res.json(rows[0]);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch skill' });
   }
 });
 
-router.post('/', authMiddleware, (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
   try {
     const db = getDb();
     const { name, category, proficiency, icon } = req.body;
     if (!name || !category) return res.status(400).json({ error: 'Name and category are required' });
-    const result = dbRun(db, 'INSERT INTO skills (name, category, proficiency, icon) VALUES (?, ?, ?, ?)', [name, category, proficiency || 1, icon || null]);
-    saveDatabase();
-    const skill = dbGet(db, 'SELECT * FROM skills WHERE id = ?', [result.lastInsertRowid]);
-    res.status(201).json(skill);
+    const { rows } = await db.query(
+      'INSERT INTO skills (name, category, proficiency, icon) VALUES ($1, $2, $3, $4) RETURNING *',
+      [name, category, proficiency || 1, icon || null]
+    );
+    res.status(201).json(rows[0]);
   } catch (error) {
-    if (error.message?.includes('UNIQUE')) return res.status(400).json({ error: 'A skill with this name already exists' });
+    if (error.message?.includes('unique')) return res.status(400).json({ error: 'A skill with this name already exists' });
     res.status(500).json({ error: 'Failed to create skill' });
   }
 });
 
-router.put('/:id', authMiddleware, (req, res) => {
+router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const db = getDb();
     const { name, category, proficiency, icon } = req.body;
-    const existing = dbGet(db, 'SELECT * FROM skills WHERE id = ?', [req.params.id]);
+    const { rows } = await db.query('SELECT * FROM skills WHERE id = $1', [req.params.id]);
+    const existing = rows[0];
     if (!existing) return res.status(404).json({ error: 'Skill not found' });
-    db.run('UPDATE skills SET name=?, category=?, proficiency=?, icon=? WHERE id=?',
-      [name||existing.name, category||existing.category, proficiency!==undefined?proficiency:existing.proficiency, icon!==undefined?icon:existing.icon, req.params.id]);
-    saveDatabase();
-    const skill = dbGet(db, 'SELECT * FROM skills WHERE id = ?', [req.params.id]);
-    res.json(skill);
+    const { rows: updated } = await db.query(
+      'UPDATE skills SET name=$1, category=$2, proficiency=$3, icon=$4 WHERE id=$5 RETURNING *',
+      [name||existing.name, category||existing.category, proficiency!==undefined?proficiency:existing.proficiency, icon!==undefined?icon:existing.icon, req.params.id]
+    );
+    res.json(updated[0]);
   } catch (error) {
-    if (error.message?.includes('UNIQUE')) return res.status(400).json({ error: 'A skill with this name already exists' });
+    if (error.message?.includes('unique')) return res.status(400).json({ error: 'A skill with this name already exists' });
     res.status(500).json({ error: 'Failed to update skill' });
   }
 });
 
-router.delete('/:id', authMiddleware, (req, res) => {
+router.delete('/:id', authMiddleware, async (req, res) => {
   try {
     const db = getDb();
-    const existing = dbGet(db, 'SELECT * FROM skills WHERE id = ?', [req.params.id]);
-    if (!existing) return res.status(404).json({ error: 'Skill not found' });
-    db.run('DELETE FROM skills WHERE id = ?', [req.params.id]);
-    saveDatabase();
+    const { rows } = await db.query('SELECT * FROM skills WHERE id = $1', [req.params.id]);
+    if (!rows[0]) return res.status(404).json({ error: 'Skill not found' });
+    await db.query('DELETE FROM skills WHERE id = $1', [req.params.id]);
     res.json({ message: 'Skill deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to delete skill' });
