@@ -176,15 +176,23 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="border-t border-dark-700 py-12 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-gray-400">
-            Built with 💚 by Suriya Vijayakumar — Summer 2026
-          </p>
-          <p className="text-gray-500 text-sm mt-2">
-            React • Node.js • Express • SQLite • Tailwind CSS
-          </p>
-        </div>
-      </footer>
+  <div className="max-w-7xl mx-auto text-center">
+    <p className="text-gray-400 mb-4">
+      Built with 💚 by Suriya Vijayakumar — Summer 2026
+    </p>
+    <div className="flex justify-center gap-6 mb-4">
+      <a href="https://www.linkedin.com/in/suriya-vijayakumar/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+        LinkedIn
+      </a>
+      <a href="https://github.com/suriya-vijay" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+        GitHub
+      </a>
+      <a href="mailto:suriya.d.vijay@gmail.com" className="text-primary hover:underline">
+        Email
+      </a>
     </div>
-  )
-}
+    <p className="text-gray-500 text-sm">
+      React • Node.js • Express • PostgreSQL • Tailwind CSS
+    </p>
+  </div>
+</footer>
